@@ -25,7 +25,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/base_link.STL" />
+          filename="package://quadruped_description/meshes/visual/base_link.STL" />
       </geometry>
       <material
         name="">
@@ -39,7 +39,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/base_link.STL" />
+          filename="package://quadruped_description/meshes/collision/base_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -65,7 +65,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/hip_fl_link.STL" />
+          filename="package://quadruped_description/meshes/visual/hip_fl_link.STL" />
       </geometry>
       <material
         name="">
@@ -79,7 +79,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/hip_fl_link.STL" />
+          filename="package://quadruped_description/meshes/collision/hip_fl_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -128,7 +128,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/thigh_fl_link.STL" />
+          filename="package://quadruped_description/meshes/visual/thigh_fl_link.STL" />
       </geometry>
       <material
         name="">
@@ -142,7 +142,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/thigh_fl_link.STL" />
+          filename="package://quadruped_description/meshes/collision/thigh_fl_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -191,7 +191,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/shank_fl_link.STL" />
+          filename="package://quadruped_description/meshes/visual/shank_fl_link.STL" />
       </geometry>
       <material
         name="">
@@ -205,7 +205,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/shank_fl_link.STL" />
+          filename="package://quadruped_description/meshes/collision/shank_fl_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -254,7 +254,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/hip_fr_link.STL" />
+          filename="package://quadruped_description/meshes/visual/hip_fr_link.STL" />
       </geometry>
       <material
         name="">
@@ -268,7 +268,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/hip_fr_link.STL" />
+          filename="package://quadruped_description/meshes/collision/hip_fr_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -317,7 +317,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/thigh_fr_link.STL" />
+          filename="package://quadruped_description/meshes/visual/thigh_fr_link.STL" />
       </geometry>
       <material
         name="">
@@ -331,7 +331,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/thigh_fr_link.STL" />
+          filename="package://quadruped_description/meshes/collision/thigh_fr_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -380,7 +380,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/shank_fr_link.STL" />
+          filename="package://quadruped_description/meshes/visual/shank_fr_link.STL" />
       </geometry>
       <material
         name="">
@@ -394,7 +394,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/shank_fr_link.STL" />
+          filename="package://quadruped_description/meshes/collision/shank_fr_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -443,7 +443,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/hip_rr_link.STL" />
+          filename="package://quadruped_description/meshes/visual/hip_rr_link.STL" />
       </geometry>
       <material
         name="">
@@ -457,7 +457,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/hip_rr_link.STL" />
+          filename="package://quadruped_description/meshes/collision/hip_rr_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -506,7 +506,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/thigh_rr_link.STL" />
+          filename="package://quadruped_description/meshes/visual/thigh_rr_link.STL" />
       </geometry>
       <material
         name="">
@@ -520,7 +520,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/thigh_rr_link.STL" />
+          filename="package://quadruped_description/meshes/collision/thigh_rr_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -569,7 +569,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/shank_rr_link.STL" />
+          filename="package://quadruped_description/meshes/visual/shank_rr_link.STL" />
       </geometry>
       <material
         name="">
@@ -583,7 +583,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/shank_rr_link.STL" />
+          filename="package://quadruped_description/meshes/collision/shank_rr_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -632,7 +632,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/hip_rl_link.STL" />
+          filename="package://quadruped_description/meshes/visual/hip_rl_link.STL" />
       </geometry>
       <material
         name="">
@@ -646,7 +646,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/hip_rl_link.STL" />
+          filename="package://quadruped_description/meshes/collision/hip_rl_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -695,7 +695,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/thigh_rl_link.STL" />
+          filename="package://quadruped_description/meshes/visual/thigh_rl_link.STL" />
       </geometry>
       <material
         name="">
@@ -709,7 +709,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/thigh_rl_link.STL" />
+          filename="package://quadruped_description/meshes/collision/thigh_rl_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -758,7 +758,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/shank_rl_link.STL" />
+          filename="package://quadruped_description/meshes/visual/shank_rl_link.STL" />
       </geometry>
       <material
         name="">
@@ -772,7 +772,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://quadruped_description/meshes/shank_rl_link.STL" />
+          filename="package://quadruped_description/meshes/collision/shank_rl_link.STL" />
       </geometry>
     </collision>
   </link>
