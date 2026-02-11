@@ -9,7 +9,6 @@ find_package(ament_cmake REQUIRED)
 find_package(Eigen3 REQUIRED)
 
 add_library(${PROJECT_NAME}
-  src/bezier_curve.cpp
   src/body_ik.cpp
   src/leg_ik.cpp
 )

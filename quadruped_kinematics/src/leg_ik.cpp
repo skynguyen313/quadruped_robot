@@ -1,12 +1,8 @@
 #include "quadruped_kinematics/leg_ik.hpp"
-#include "quadruped_kinematics/core/math.hpp"
 #include <cmath>
 #include <iostream>
 
 namespace quadruped_kinematics {
-
-using quadruped_kinematics::core::PI;
-using quadruped_kinematics::core::HALF_PI;
 
 /**
  * @brief Construct a Leg Inverse Kinematics model
