@@ -12,8 +12,8 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <depend>eigen3_cmake_module</depend>
-  <depend>eigen</depend>
+  <depend>quadruped_core</depend>
+  <depend>Eigen3</depend>
 
   <export>
     <build_type>ament_cmake</build_type>

@@ -6,6 +6,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
+find_package(quadruped_core REQUIRED)
 find_package(Eigen3 REQUIRED)
 
 add_library(${PROJECT_NAME}
@@ -19,8 +20,9 @@ target_include_directories(${PROJECT_NAME}
     $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(${PROJECT_NAME}
-  Eigen3::Eigen
+ament_target_dependencies(${PROJECT_NAME}
+  quadruped_core
+  Eigen3
 )
 
 target_compile_features(${PROJECT_NAME}
@@ -41,6 +43,6 @@ install(
 )
 
 ament_export_targets(export_${PROJECT_NAME})
-ament_export_dependencies(Eigen3)
+ament_export_dependencies(quadruped_core Eigen3)
 
 ament_package()

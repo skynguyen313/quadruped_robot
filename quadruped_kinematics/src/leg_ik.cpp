@@ -1,113 +1,121 @@
 #include "quadruped_kinematics/leg_ik.hpp"
+#include "quadruped_core/math/angle.hpp"
+#include "quadruped_core/math/clamp.hpp"
+#include "quadruped_core/math/numeric.hpp"
 #include <cmath>
-#include <iostream>
 
 namespace quadruped_kinematics {
 
 /**
- * @brief Construct a Leg Inverse Kinematics model
+ * @brief 3-DOF leg inverse kinematics solver.
  *
- * @param upper  Length of the thigh link (hip pitch joint → knee joint)
- * @param lower  Length of the shank link (knee joint → foot)
- * @param off0   Lateral offset between hip abduction joint and hip pitch joint
- * @param off1   Vertical offset between hip abduction joint and hip pitch joint
+ * Solves joint angles for a single quadruped leg given a desired
+ * foot position expressed in the hip frame (HTF).
  *
- * @note
- *  - All parameters must be expressed in the same length unit (e.g. mm)
- *  - Joint angles returned by this model are in radians
+ * Geometry assumptions:
+ *  - Revolute hip abduction joint
+ *  - Revolute hip pitch joint
+ *  - Revolute knee pitch joint
+ *  - Fixed offsets between hip abduction and hip pitch axes
+ *
+ * All dimensions must be expressed in the same length unit.
+ * All returned joint angles are in radians.
  */
-LegIKModel::LegIKModel(double upper, double lower, double off0, double off1)
-    : upper_(upper), lower_(lower), off0_(off0), off1_(off1)
+LegIKModel::LegIKModel(double upper,
+                       double lower,
+                       double off0,
+                       double off1)
+    : upper_(upper),
+      lower_(lower),
+      off0_(off0),
+      off1_(off1)
 {
 }
 
 /**
- * @brief Compute joint angles from hip-to-foot vectors
+ * @brief Solve inverse kinematics for all legs.
  *
- * Given a list of foot positions expressed in the hip coordinate frame (HTF),
- * this function computes the corresponding joint angles for each leg.
+ * @param htf_vecs  Foot positions expressed in the hip frame.
+ *                  Array size must match LEG_COUNT.
  *
- * Each input vector (x, y, z) represents the desired foot position relative
- * to the hip abduction joint frame.
- *
- * @param htf_vecs  List of hip-to-foot vectors (x, y, z)
- *
- * @return A vector of joint angle triplets:
- *         {theta_h, theta_s, theta_w}
- *         where:
- *           - theta_h : hip abduction/adduction angle
- *           - theta_s : hip pitch (thigh) angle
- *           - theta_w : knee pitch angle
+ * @return Joint angles per leg:
+ *         {hip_abduction, hip_pitch, knee_pitch}
  *
  * @note
- *  - This model assumes a 3-DOF leg (hip abduction + hip pitch + knee pitch)
- *  - No joint limits or safety clamping are applied
+ *  - No joint limits are enforced.
+ *  - No singularity handling beyond basic numeric protection.
+ *  - Targets outside reachable workspace are numerically clamped.
+ *  - Function is realtime-safe (no dynamic allocation).
  */
-std::vector<std::array<double, 3>>
-LegIKModel::ja_from_htf_vecs(const std::vector<std::array<double, 3>>& htf_vecs)
+quadruped_core::types::JointArray
+LegIKModel::solve(const quadruped_core::types::FootArray& htf_vecs) const
 {
-    std::vector<std::array<double, 3>> joint_angles;
+    quadruped_core::types::JointArray joint_angles{};
 
-    try
+    for (size_t i = 0; i < quadruped_core::types::LEG_COUNT; ++i)
     {
-        for (const auto& vec : htf_vecs)
-        {
-            // Desired foot position in hip coordinate frame
-            double x = vec[0];  // forward/backward
-            double y = vec[1];  // lateral
-            double z = vec[2];  // vertical
+        const auto& foot = htf_vecs[i];
 
-            // Distance between hip abduction joint and hip pitch joint
-            double h1 = std::sqrt(off0_ * off0_ + off1_ * off1_);
+        const double x = foot.x();
+        const double y = foot.y();
+        const double z = foot.z();
 
-            // Projection of foot position onto the Y-Z plane
-            double h2 = std::sqrt(z * z + y * y);
+        const double h1 = std::sqrt(off0_ * off0_ + off1_ * off1_);
 
-            // Angle of foot position in Y-Z plane
-            double alpha_0 = std::atan(y / z);
+        const double h2 = std::sqrt(z * z + y * y);
+        if (h2 < 1e-8)
+            continue;
 
-            // Fixed geometric angles due to hip joint offsets
-            double alpha_1 = std::atan(off1_ / off0_);
-            double alpha_2 = std::atan(off0_ / off1_);
+        const double alpha_0 = std::atan2(y, z);
 
-            // Law of sines to solve the hip offset triangle
-            double alpha_3 = std::asin(
-                h1 * std::sin(alpha_2 + HALF_PI) / h2
-            );
+        const double alpha_1 = std::atan2(off1_, off0_);
+        const double alpha_2 = std::atan2(off0_, off1_);
 
-            // Remaining interior angles of the offset triangle
-            double alpha_4 = PI - (alpha_3 + alpha_2 + HALF_PI);
-            double alpha_5 = alpha_1 - alpha_4;
+        const double sin_arg =
+            quadruped_core::math::clamp(h1 * std::sin(alpha_2 + quadruped_core::math::HALF_PI) / h2,
+                  -1.0, 1.0);
 
-            // Hip abduction/adduction angle
-            double theta_h = alpha_0 - alpha_5;
+        const double alpha_3 = std::asin(sin_arg);
 
-            // Effective distance from hip pitch joint to foot projection
-            double r0 = h1 * std::sin(alpha_4) / std::sin(alpha_3);
-            double h = std::sqrt(r0 * r0 + x * x);
+        const double alpha_4 =
+            quadruped_core::math::PI - (alpha_3 + alpha_2 + quadruped_core::math::HALF_PI);
 
-            // Angle between horizontal projection and foot position
-            double phi = std::asin(x / h);
+        const double alpha_5 = alpha_1 - alpha_4;
 
-            // Hip pitch (thigh) angle using cosine law
-            double theta_s =
-                std::acos((h * h + upper_ * upper_ - lower_ * lower_) /
-                          (2.0 * h * upper_))
-                - phi;
+        const double theta_h = alpha_0 - alpha_5;
 
-            // Knee pitch angle using cosine law
-            double theta_w =
-                std::acos((lower_ * lower_ + upper_ * upper_ - h * h) /
-                          (2.0 * lower_ * upper_));
+        const double sin_alpha3 = std::sin(alpha_3);
+        if (std::abs(sin_alpha3) < 1e-8)
+            continue;
 
-            // Store joint angles for this leg
-            joint_angles.push_back({theta_h, theta_s, theta_w});
-        }
-    }
-    catch (...)
-    {
-        // Numerical failure (e.g. out-of-reach target causing invalid acos/asin)
-        std::cerr << "Leg IK: Out of Bounds." << std::endl;
+        const double r0 =
+            h1 * std::sin(alpha_4) / sin_alpha3;
+
+        const double h =
+            std::sqrt(r0 * r0 + x * x);
+        if (h < 1e-8)
+            continue;
+
+        const double phi =
+            std::asin(quadruped_core::math::clamp(x / h, -1.0, 1.0));
+
+        const double cos_thigh =
+            quadruped_core::math::clamp((h * h + upper_ * upper_ - lower_ * lower_) /
+                  (2.0 * h * upper_),
+                  -1.0, 1.0);
+
+        const double theta_s =
+            std::acos(cos_thigh) - phi;
+
+        const double cos_knee =
+            quadruped_core::math::clamp((lower_ * lower_ + upper_ * upper_ - h * h) /
+                  (2.0 * lower_ * upper_),
+                  -1.0, 1.0);
+
+        const double theta_w =
+            std::acos(cos_knee);
+
+        joint_angles[i] = {theta_h, theta_s, theta_w};
     }
 
     return joint_angles;

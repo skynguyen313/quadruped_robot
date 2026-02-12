@@ -1,71 +1,65 @@
 #pragma once
 
-#include <vector>
-#include <array>
+#include "quadruped_core/types/joint_types.hpp"
+#include "quadruped_core/types/foot_types.hpp"
 
-namespace quadruped_kinematics {
+namespace quadruped_kinematics
+{
 
 /**
- * @brief Leg Inverse Kinematics model for a quadruped robot
+ * @brief 3-DOF leg inverse kinematics solver.
  *
- * This class computes joint angles (hip, thigh, knee)
- * from HTF (Hip-To-Foot) vectors expressed in the leg coordinate frame.
+ * Computes joint angles for a quadruped leg given desired
+ * foot positions expressed in the hip coordinate frame (HTF).
  *
- * The mathematical model is adapted from the Python implementation
- * and follows a geometric IK approach using trigonometry.
+ * Kinematic structure:
+ *  - Hip abduction/adduction
+ *  - Hip pitch
+ *  - Knee pitch
+ *
+ * All link dimensions must be expressed in the same length unit.
+ * Returned joint angles are in radians.
+ *
+ * This class is allocation-free and suitable for real-time control.
  */
 class LegIKModel
 {
 public:
     /**
-     * @brief Constructor
+     * @brief Construct leg IK model with geometric parameters.
      *
-     * @param upper Length of the upper leg link (hip → knee), in meters or mm
-     * @param lower Length of the lower leg link (knee → foot), in meters or mm
-     * @param off0  Lateral offset from hip joint to leg plane (paper parameter)
-     * @param off1  Vertical offset from hip joint to leg plane (paper parameter)
-     *
-     * off0 and off1 define the hip joint geometry:
-     *  - They model the displacement between the hip yaw joint
-     *    and the hip pitch joint.
+     * @param upper  Thigh length (hip pitch → knee)
+     * @param lower  Shank length (knee → foot)
+     * @param off0   Lateral offset between hip abduction and hip pitch axes
+     * @param off1   Vertical offset between hip abduction and hip pitch axes
      */
-    LegIKModel(double upper, double lower, double off0, double off1);
+    LegIKModel(double upper,
+               double lower,
+               double off0,
+               double off1);
 
     /**
-     * @brief Compute joint angles from HTF vectors
+     * @brief Solve inverse kinematics for all legs.
      *
-     * @param htf_vecs Vector of HTF vectors:
-     *        Each element is {x, y, z} where:
-     *          - x: forward/backward displacement
-     *          - y: lateral displacement
-     *          - z: vertical displacement (downwards is usually positive)
+     * @param htf_vecs Foot positions in hip frame.
+     *                 Array size must equal LEG_COUNT.
      *
-     * @return std::vector<std::array<double, 3>>
-     *         Joint angles for each leg:
-     *           [0] hip yaw (or hip roll depending on convention)
-     *           [1] hip pitch (shoulder / thigh joint)
-     *           [2] knee pitch
+     * @return Joint angles per leg:
+     *         {hip_abduction, hip_pitch, knee_pitch}
      *
-     * Notes:
-     *  - Output angles are in radians
-     *  - The order matches the leg kinematic chain
-     *  - Caller is responsible for joint limit checking
+     * @note
+     *  - No joint limits are enforced.
+     *  - Targets outside reachable workspace are numerically clamped.
+     *  - Function performs no dynamic allocation.
      */
-    std::vector<std::array<double, 3>>
-    ja_from_htf_vecs(const std::vector<std::array<double, 3>>& htf_vecs);
+    quadruped_core::types::JointArray
+    solve(const quadruped_core::types::FootArray& htf_vecs) const;
 
 private:
-    /// Length of upper leg segment (hip → knee)
-    double upper_;
-
-    /// Length of lower leg segment (knee → foot)
-    double lower_;
-
-    /// Hip joint horizontal / lateral offset
-    double off0_;
-
-    /// Hip joint vertical offset
-    double off1_;
+    double upper_;   ///< Thigh length
+    double lower_;   ///< Shank length
+    double off0_;    ///< Hip lateral offset
+    double off1_;    ///< Hip vertical offset
 };
 
 } // namespace quadruped_kinematics
