@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>quadruped_core</name>
+  <version>0.1.0</version>
+  <description>
+    Core foundation library for quadruped robot software stack.
+    Provides common math utilities, types, and constants shared
+    across motion, kinematics, control, and hardware layers.
+  </description>
+
+  <maintainer email="skynguyen313@email.com">skynguyen313</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>eigen3_cmake_module</depend>
+  <depend>Eigen3</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
