@@ -77,11 +77,9 @@ private:
     double length_;  ///< Body length
     double height_;  ///< Nominal body height
 
-    std::array<Eigen::Vector3d,
-               quadruped_core::types::LEG_COUNT> body_points_;
+    quadruped_core::types::FootArray body_points_;
+    quadruped_core::types::FootArray leg_points_;
 
-    std::array<Eigen::Vector3d,
-               quadruped_core::types::LEG_COUNT> leg_points_;
 };
 
 } // namespace quadruped_kinematics
